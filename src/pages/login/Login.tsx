@@ -1,7 +1,14 @@
+import { useNavigate } from 'react-router-dom';
 import { Button } from '../../components/button/Button';
 import { Input } from '../../components/input/Input';
 
 const Login = () => {
+  const navigate = useNavigate();
+
+  const handleLogin = () => {
+    navigate('/dashboard');
+  };
+
   return (
     // <div className='min-h-screen flex bg-gray-200 flex-col md:flex-row transition-all duration-500 ease-in-out'>
     //   <div className='flex flex-col justify-center w-full md:w-4/7 px-4 sm:px-8 lg:px-64 py-10 max-w-[800px] mx-auto transition-all duration-500 ease-in-out'>
@@ -56,7 +63,7 @@ const Login = () => {
         </div>
 
         <div className='mt-12'>
-          <Button label='Sign In' onClick={() => console.log('Sign In')} />
+          <Button label='Sign In' onClick={handleLogin} />
         </div>
       </div>
 
