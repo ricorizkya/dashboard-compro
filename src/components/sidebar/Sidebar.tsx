@@ -1,31 +1,37 @@
 import { useState } from 'react';
 import { IoCloseOutline } from 'react-icons/io5';
+import { PiImagesFill } from 'react-icons/pi';
 import { RiDashboardFill } from 'react-icons/ri';
 import { SlMenu } from 'react-icons/sl';
 import { Link, useLocation } from 'react-router-dom';
 
 const Sidebar = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [isExpanded, setIsExpanded] = useState(true);
   const location = useLocation();
 
   const menuItems = [
     { name: 'Dashboard', path: '/dashboard', icon: <RiDashboardFill /> },
-    { name: 'Settings', path: '/settings', icon: <RiDashboardFill /> },
+    { name: 'Carousel', path: '/carousel', icon: <PiImagesFill /> },
     { name: 'Profile', path: '/profile', icon: <RiDashboardFill /> },
     { name: 'Logout', path: '/logout', icon: <RiDashboardFill /> },
   ];
 
+  const handleOpenToggle = () => {
+    setIsOpen(!isOpen);
+  };
+
   return (
     <div
       className={`
-        bg-white shadow-md z-50 fixed md:relative top-0 left-0 transition-all duration-300 ease-in-out
-        w-full md:h-screen
+        bg-white shadow-md z-50 fixed md:relative
+        top-0 left-0 w-full h-[calc(100vh-4rem)] md:h-screen
+        transition-all duration-300 ease-in-out
         ${isExpanded ? 'md:w-64' : 'md:w-20'}
       `}
     >
       {/* Header */}
-      <div className='flex justify-between items-center p-4 relative'>
+      <div className='flex justify-between items-center p-4 relative h-16'>
         <div
           className='flex items-center cursor-pointer'
           onClick={() => setIsExpanded(!isExpanded)}
@@ -49,7 +55,7 @@ const Sidebar = () => {
         </div>
 
         {/* Mobile toggle */}
-        <button onClick={() => setIsOpen(!isOpen)} className='md:hidden'>
+        <button onClick={handleOpenToggle} className='md:hidden'>
           {isOpen ? <IoCloseOutline size={24} /> : <SlMenu size={20} />}
         </button>
 
@@ -73,41 +79,40 @@ const Sidebar = () => {
       {/* Navigation */}
       <nav
         className={`
+          px-4 pb-4 bg-white
+          absolute top-16 left-0 w-full h-[calc(100%-4rem)]
           transition-all duration-300 ease-in-out
-          flex-col gap-2 px-4 pb-4 justify-center
+          shadow-lg md:shadow-none
+          transform overflow-y-auto
           ${
             isOpen
-              ? 'opacity-100 translate-x-0 flex'
-              : 'opacity-0 -translate-x-full hidden'
+              ? 'translate-y-0 opacity-100'
+              : '-translate-y-[150%] opacity-0'
           }
-          md:opacity-100 md:translate-x-0 md:flex
+          md:translate-y-0 md:opacity-100 md:relative md:top-0
         `}
       >
-        {menuItems.map((item, idx) => (
-          <Link
-            key={idx}
-            to={item.path}
-            className={`flex items-center gap-4 px-4 py-2 rounded-lg transition-all
-              ${
-                location.pathname === item.path
-                  ? 'bg-[#003366] text-white font-semibold'
-                  : 'text-gray-700 hover:bg-gray-100'
-              }
-              ${isOpen ? 'text-sm' : ''} 
-            `}
-            onClick={() => setIsOpen(false)}
-          >
-            <span className='text-lg md:text-xl'>{item.icon}</span>
-            <span
-              className={`
-                ${isExpanded ? 'inline' : 'hidden'} md:inline
-                ${isOpen ? 'text-sm' : ''}
+        <div className='flex flex-col gap-2'>
+          {menuItems.map((item, idx) => (
+            <Link
+              key={idx}
+              to={item.path}
+              className={`flex items-center gap-4 px-4 py-2 rounded-lg transition-all
+                ${
+                  location.pathname === item.path
+                    ? 'bg-[#003366] text-white font-semibold'
+                    : 'text-gray-700 hover:bg-gray-100'
+                }
               `}
+              onClick={() => setIsOpen(false)}
             >
-              {item.name}
-            </span>
-          </Link>
-        ))}
+              <span className='text-lg md:text-xl'>{item.icon}</span>
+              <span className={`${isExpanded ? 'inline' : 'hidden'} md:inline`}>
+                {item.name}
+              </span>
+            </Link>
+          ))}
+        </div>
       </nav>
     </div>
   );
