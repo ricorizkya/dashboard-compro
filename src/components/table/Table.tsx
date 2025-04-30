@@ -6,7 +6,7 @@ interface TableProps<T extends { id: string }> {
     key: string;
     label: string;
     sortable?: boolean;
-    filterable?: boolean;
+    // filterable?: boolean;
     className?: string;
   }[];
   data: T[];
@@ -22,6 +22,7 @@ interface TableProps<T extends { id: string }> {
   };
   sortable?: boolean;
   selectable?: boolean;
+  globalFilter?: boolean;
   loading?: boolean;
   onSort?: (sortKey: string, direction: 'asc' | 'desc') => void;
   onFilter?: (filterKey: string, value: string) => void;
@@ -37,17 +38,19 @@ const Table = <T extends { id: string }>({
   pagination = { pageSize: 10, showControls: true },
   sortable = false,
   selectable = false,
+  globalFilter = true,
   loading = false,
   onSort,
-  onFilter,
+  // onFilter,
   onSelectionChange,
 }: TableProps<T>) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState<string>('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
-  const [filters, setFilters] = useState<Record<string, string>>({});
+  // const [filters, setFilters] = useState<Record<string, string>>({});
   const [localData, setLocalData] = useState<T[]>([]);
+  const [globalFilterValue, setGlobalFilterValue] = useState('');
 
   // Pagination
   const pageSize = pagination?.pageSize || 10;
@@ -81,18 +84,17 @@ const Table = <T extends { id: string }>({
   useEffect(() => {
     let filteredData = [...data];
 
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value) {
-        filteredData = filteredData.filter((item) =>
-          String(item[key as keyof T])
-            .toLowerCase()
-            .includes(value.toLowerCase())
-        );
-      }
-    });
+    if (globalFilterValue) {
+      filteredData = filteredData.filter((item) =>
+        headers.some((header) => {
+          const value = String(item[header.key as keyof T]);
+          return value.toLowerCase().includes(globalFilterValue.toLowerCase());
+        })
+      );
+    }
 
     setLocalData(filteredData);
-  }, [filters, data]);
+  }, [globalFilterValue, data, headers]);
 
   // Selection
   const toggleRowSelection = (id: string) => {
@@ -130,13 +132,19 @@ const Table = <T extends { id: string }>({
     onSort?.(key, newDirection);
   };
 
-  const handleFilter = (key: string, value: string) => {
-    setFilters((prev: object) => ({ ...prev, [key]: value }));
-    onFilter?.(key, value);
-  };
-
   return (
     <div className={`overflow-x-auto rounded-lg border ${className}`}>
+      {globalFilter && (
+        <div className='p-4 border-b'>
+          <input
+            type='text'
+            placeholder='Cari semua kolom...'
+            value={globalFilterValue}
+            onChange={(e) => setGlobalFilterValue(e.target.value)}
+            className='w-full max-w-xs px-3 py-2 border rounded-md text-sm'
+          />
+        </div>
+      )}
       {/* Loading State */}
       {loading && (
         <div className='absolute inset-0 bg-white bg-opacity-50 flex items-center justify-center'>
@@ -198,17 +206,6 @@ const Table = <T extends { id: string }>({
                     </button>
                   )}
                 </div>
-
-                {/* Filter Input */}
-                {header.filterable && (
-                  <input
-                    type='text'
-                    placeholder={`Filter ${header.label}`}
-                    className='mt-1 w-full text-xs border rounded px-2 py-1'
-                    value={filters[header.key] || ''}
-                    onChange={(e) => handleFilter(header.key, e.target.value)}
-                  />
-                )}
               </th>
             ))}
           </tr>
