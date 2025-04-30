@@ -53,9 +53,11 @@ const Carousel = () => {
 
       <Table
         headers={[
-          { key: 'name', label: 'Name', sortable: true, filterable: true },
-          { key: 'age', label: 'Age', sortable: true },
-          { key: 'email', label: 'Email', sortable: true, filterable: true },
+          { key: 'image', label: 'Image', sortable: true },
+          { key: 'title', label: 'Title', sortable: true },
+          { key: 'description', label: 'Description', sortable: true },
+          { key: 'status', label: 'Status', sortable: true },
+          { key: 'action', label: 'Action', sortable: true },
         ]}
         data={users.map((user) => ({ ...user, id: user.id.toString() }))}
         renderRow={(user, { isSelected, toggleSelection }) => (

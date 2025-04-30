@@ -1,7 +1,14 @@
 import { useState } from 'react';
+import {
+  HiMiniChatBubbleLeftRight,
+  HiUsers,
+  HiWrenchScrewdriver,
+} from 'react-icons/hi2';
+import { IoMdImages } from 'react-icons/io';
 import { IoCloseOutline } from 'react-icons/io5';
+import { MdRateReview } from 'react-icons/md';
 import { PiImagesFill } from 'react-icons/pi';
-import { RiDashboardFill } from 'react-icons/ri';
+import { RiDashboardFill, RiSettings3Fill } from 'react-icons/ri';
 import { SlMenu } from 'react-icons/sl';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -12,9 +19,29 @@ const Sidebar = () => {
 
   const menuItems = [
     { name: 'Dashboard', path: '/dashboard', icon: <RiDashboardFill /> },
-    { name: 'Carousel', path: '/carousel', icon: <PiImagesFill /> },
-    { name: 'Profile', path: '/profile', icon: <RiDashboardFill /> },
-    { name: 'Logout', path: '/logout', icon: <RiDashboardFill /> },
+    { name: 'Carousels', path: '/carousel', icon: <PiImagesFill /> },
+    {
+      name: 'Services & Products',
+      path: '/profile',
+      icon: <HiWrenchScrewdriver />,
+    },
+    {
+      name: 'Portfolio Images',
+      path: '/portfolio/images',
+      icon: <IoMdImages />,
+    },
+    {
+      name: 'Portfolio Reviews',
+      path: '/portfolio/reviews',
+      icon: <MdRateReview />,
+    },
+    {
+      name: 'Messages',
+      path: '/messages',
+      icon: <HiMiniChatBubbleLeftRight />,
+    },
+    { name: 'Users', path: '/users', icon: <HiUsers /> },
+    { name: 'Settings', path: '/settings', icon: <RiSettings3Fill /> },
   ];
 
   const handleOpenToggle = () => {

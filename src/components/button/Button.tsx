@@ -1,6 +1,6 @@
 type ButtonProps = {
   label: string;
-  onClick: () => void;
+  onClick: (e: React.FormEvent) => Promise<void>;
   disabled?: boolean;
   className?: string;
 };

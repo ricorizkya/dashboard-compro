@@ -15,7 +15,7 @@ export const Input: React.FC<InputProps> = ({
   value,
   onChange,
 }) => {
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(true);
   const isPassword = type === 'password';
   const inputType = isPassword && showPassword ? 'password' : 'text';
   return (
@@ -34,9 +34,9 @@ export const Input: React.FC<InputProps> = ({
           className='absolute right-4 top-1/2 -translate-y-1/2 text-gray-600'
         >
           {showPassword ? (
-            <EyeOff w={20} h={20} color='#868A92' />
-          ) : (
             <Eye w={20} h={20} color='#868A92' />
+          ) : (
+            <EyeOff w={20} h={20} color='#868A92' />
           )}
         </button>
       )}
