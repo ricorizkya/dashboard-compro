@@ -6,6 +6,7 @@ type InputProps = {
   type?: string;
   placeholder?: string;
   value?: string;
+  readonly?: boolean;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
@@ -13,6 +14,7 @@ export const Input: React.FC<InputProps> = ({
   type = 'text',
   placeholder,
   value,
+  readonly = false,
   onChange,
 }) => {
   const [showPassword, setShowPassword] = useState(true);
@@ -26,6 +28,7 @@ export const Input: React.FC<InputProps> = ({
         placeholder={placeholder}
         value={value}
         onChange={onChange}
+        readOnly={readonly}
       />
       {isPassword && (
         <button

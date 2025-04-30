@@ -1,5 +1,9 @@
 @import 'tailwindcss';
 
+input[readonly] {
+  cursor: not-allowed;
+  background-color: #919191;
+}
 /* :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;

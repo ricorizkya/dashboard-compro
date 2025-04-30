@@ -51,7 +51,7 @@ const Sidebar = () => {
   return (
     <div
       className={`
-        bg-white shadow-md z-50 fixed md:relative
+        bg-amber-500 shadow-md z-50 fixed md:relative
         top-0 left-0 w-full h-[calc(100vh-4rem)] md:h-screen
         transition-all duration-300 ease-in-out
         ${isExpanded ? 'md:w-64' : 'md:w-20'}
@@ -64,7 +64,7 @@ const Sidebar = () => {
           onClick={() => setIsExpanded(!isExpanded)}
         >
           <img
-            src='/src/assets/logo.png'
+            src='/src/assets/logo-black-no-title.png'
             className={!isExpanded ? 'hidden' : 'mr-2 w-8'}
             alt='Logo'
           />
@@ -95,7 +95,7 @@ const Sidebar = () => {
             <IoCloseOutline size={16} />
           ) : (
             <img
-              src='/src/assets/logo.png'
+              src='/src/assets/logo-black-no-title.png'
               className={isExpanded ? 'hidden' : 'mr-2 w-8'}
               alt='Logo'
             />
@@ -106,7 +106,7 @@ const Sidebar = () => {
       {/* Navigation */}
       <nav
         className={`
-          px-4 pb-4 bg-white
+          px-4 pb-4 bg-amber-500
           absolute top-16 left-0 w-full h-[calc(100%-4rem)]
           transition-all duration-300 ease-in-out
           shadow-lg md:shadow-none

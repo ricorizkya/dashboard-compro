@@ -4,6 +4,12 @@ import api from './api';
 interface LoginResponse {
   expires: string;
   token: string;
+  user: {
+    id: number;
+    name: string;
+    role: string;
+    username: string;
+  };
 }
 
 export const login = async (credentials: {
@@ -12,12 +18,13 @@ export const login = async (credentials: {
 }) => {
   try {
     const response = await api.post<LoginResponse>('/login', credentials);
-
+    console.log('Login response:', response.data);
     if (!response.data.token) {
       throw new Error('Token tidak ditemukan dalam respons');
     }
 
     localStorage.setItem('token', response.data.token);
+    localStorage.setItem('idUser', response.data.user.id.toString());
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -32,11 +39,9 @@ export const login = async (credentials: {
 
 export const logout = async () => {
   try {
-    // Ambil token sebelum dihapus
     const token = localStorage.getItem('authToken');
     console.log('Token before logout:', token);
 
-    // Hapus token dari storage terlebih dahulu
     localStorage.removeItem('authToken');
     sessionStorage.clear();
 
