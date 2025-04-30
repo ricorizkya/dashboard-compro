@@ -46,7 +46,7 @@ const Carousel = () => {
         <span className='text-4xl text-black font-medium'>Data Carousel</span>
         <Button
           label='Tambah'
-          onClick={() => console.log('Tambah')}
+          onClick={async () => console.log('Tambah')}
           className='w-xs px-4 py-2 rounded-lg text-white shadow-md bg-blue-500 hover:bg-blue-600'
         />
       </div>

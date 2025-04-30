@@ -39,10 +39,11 @@ export const login = async (credentials: {
 
 export const logout = async () => {
   try {
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem('token');
     console.log('Token before logout:', token);
 
-    localStorage.removeItem('authToken');
+    localStorage.removeItem('token');
+    localStorage.removeItem('idUser');
     sessionStorage.clear();
 
     await axios.post(

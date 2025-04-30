@@ -3,15 +3,16 @@ import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 import { FaPowerOff } from 'react-icons/fa';
 import { Input } from '../../components/input/Input';
 import { useNavigate } from 'react-router-dom';
-import { logout } from '../../services/auth';
 import { User } from '../../types/User';
 import { getUserById, handleUserError, updateUser } from '../../services/user';
 import { FiLoader } from 'react-icons/fi';
 import { Button } from '../../components/button/Button';
 import Alert from '../../components/alert/Alert';
+import { useAuth } from '../../context/AuthContext';
 
 const Setting = () => {
   const navigate = useNavigate();
+  const { logout } = useAuth();
   const [showModal, setShowModal] = useState(false);
   const [userData, setUserData] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -54,8 +55,8 @@ const Setting = () => {
     try {
       logout();
 
-      navigate('/login', { replace: true });
-      window.location.reload();
+      //   navigate('/login', { replace: true });
+      //   window.location.reload();
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       localStorage.clear();

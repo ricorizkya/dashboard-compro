@@ -18,7 +18,7 @@ const Login = () => {
 
     try {
       await login({ username, password });
-      navigate('/dashboard');
+      navigate('/');
     } catch (err) {
       // Tambahkan timeout untuk memastikan state update terjadi
       setTimeout(() => {
