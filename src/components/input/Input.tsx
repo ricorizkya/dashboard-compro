@@ -3,7 +3,7 @@ import Eye from '../../assets/icons/Eye';
 import EyeOff from '../../assets/icons/EyeOff';
 
 type InputProps = {
-  type?: 'text' | 'password' | 'file';
+  type?: 'text' | 'password' | 'file' | 'number';
   placeholder?: string;
   value?: string;
   readonly?: boolean;

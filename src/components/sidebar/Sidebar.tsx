@@ -22,7 +22,7 @@ const Sidebar = () => {
     { name: 'Carousels', path: '/carousel', icon: <PiImagesFill /> },
     {
       name: 'Services & Products',
-      path: '/profile',
+      path: '/product',
       icon: <HiWrenchScrewdriver />,
     },
     {

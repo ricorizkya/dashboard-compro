@@ -2,15 +2,18 @@ import { useState } from 'react';
 import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 import { useNavigate } from 'react-router-dom';
 import { Input } from '../../components/input/Input';
-import Toggle from '../../components/toggle/Toggle';
 import { Button } from '../../components/button/Button';
-import { addCarouselData } from '../../services/carousel';
+import { addProductData } from '../../services/product';
+import RadioGroup from '../../components/radioGroup/RadioGroup';
+import Toggle from '../../components/toggle/Toggle';
 
-const AddCarousel = () => {
+const AddProduct = () => {
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [price, setPrice] = useState('');
   const [status, setStatus] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string>('');
   const [error, setError] = useState('');
@@ -20,7 +23,6 @@ const AddCarousel = () => {
       const file = files[0];
       setSelectedImage(file);
 
-      // Create preview
       const reader = new FileReader();
       reader.onload = (e) => {
         if (e.target?.result) {
@@ -34,30 +36,38 @@ const AddCarousel = () => {
   const handleSubmit = async () => {
     try {
       const formData = new FormData();
+
+      // Tambahkan log untuk debugging
       formData.append('title', title);
       formData.append('description', description);
+      formData.append('price', price);
       formData.append('status', String(status));
-
+      formData.append('type_product', selectedCategory);
       if (selectedImage) {
         formData.append('image', selectedImage);
       }
 
-      await addCarouselData(formData);
-      navigate('/carousel');
+      // Log isi FormData
+      for (const [key, value] of formData.entries()) {
+        console.log(key, value);
+      }
+
+      await addProductData(formData);
+      navigate('/product');
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);
       } else {
-        setError('Gagal menambahkan data carousel');
+        setError('Gagal menambahkan data produk');
       }
     }
   };
 
   return (
     <div className='p-4'>
-      <Breadcrumb main='Dashboard' sub='Carousel' sub2='Add Carousel' />
+      <Breadcrumb main='Dashboard' sub='Product' sub2='Tambah Produk' />
       <span className='text-4xl text-black font-medium'>
-        Tambah Data Carousel
+        Tambah Data Produk
       </span>
 
       {error && (
@@ -68,8 +78,8 @@ const AddCarousel = () => {
 
       <div className='mt-8 flex gap-6'>
         {/* Preview Image */}
-        <div className='flex-none w-[500px]'>
-          <div className='w-full h-[500px] border-2 border-dashed border-gray-400 rounded-2xl flex items-center justify-center overflow-hidden'>
+        <div className='flex-none w-[600px]'>
+          <div className='w-full h-[600px] border-2 border-dashed border-gray-400 rounded-2xl flex items-center justify-center overflow-hidden'>
             {previewImage ? (
               <img
                 src={previewImage}
@@ -86,7 +96,7 @@ const AddCarousel = () => {
         <div className='flex-1 flex flex-col gap-4'>
           <div>
             <label htmlFor='image' className='text-sm mb-2 block'>
-              Gambar (Wajib)
+              Gambar Produk (Wajib)
             </label>
             <Input
               type='file'
@@ -98,13 +108,39 @@ const AddCarousel = () => {
 
           <div>
             <label htmlFor='title' className='text-sm mb-2 block'>
-              Judul (Wajib)
+              Nama Produk (Wajib)
             </label>
             <Input
               type='text'
-              placeholder='Masukkan judul...'
+              placeholder='Masukkan nama produk...'
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+            />
+          </div>
+
+          <div>
+            <label htmlFor='price' className='text-sm mb-2 block'>
+              Harga (Wajib)
+            </label>
+            <Input
+              type='number'
+              placeholder='Masukkan harga...'
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+            />
+          </div>
+
+          <div>
+            <label htmlFor='type' className='text-sm mb-2 block'>
+              Kategori
+            </label>
+            <RadioGroup
+              options={[
+                { label: 'Jasa', value: 'jasa' },
+                { label: 'Produk', value: 'produk' },
+              ]}
+              selectedValue={selectedCategory}
+              onChange={setSelectedCategory}
             />
           </div>
 
@@ -114,7 +150,7 @@ const AddCarousel = () => {
             </label>
             <Input
               type='text'
-              placeholder='Masukkan deskripsi...'
+              placeholder='Masukkan deskripsi produk...'
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className='h-32'
@@ -141,7 +177,7 @@ const AddCarousel = () => {
           <div className='flex flex-row gap-4'>
             <Button
               label='Batal'
-              onClick={async () => navigate('/carousel')}
+              onClick={async () => navigate('/product')}
               backgroundColor='#d64933'
             />
             <Button
@@ -156,4 +192,4 @@ const AddCarousel = () => {
   );
 };
 
-export default AddCarousel;
+export default AddProduct;

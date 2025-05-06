@@ -4,16 +4,16 @@ import Table from '../../components/table/Table';
 import { Button } from '../../components/button/Button';
 import { MdEdit } from 'react-icons/md';
 import { BsFillTrash3Fill } from 'react-icons/bs';
-import { CarouselData } from '../../types/Carousel';
+import { ProductData } from '../../types/Product';
 import axios from 'axios';
-import { deleteCarouselData, fetchCarouselData } from '../../services/carousel';
-import StatusBadge from '../../components/statusBadge/StatusBadge';
+import { deleteProductData, fetchProductData } from '../../services/product';
 import { useNavigate } from 'react-router-dom';
+import StatusBadge from '../../components/statusBadge/StatusBadge';
 
-const Carousel = () => {
+const Product = () => {
   const navigate = useNavigate();
-  const [carouselData, setCarouselData] = useState<CarouselData[]>([]);
-  const [selectedCarousel, setSelectedCarousel] = useState<CarouselData[]>([]);
+  const [productData, setProductData] = useState<ProductData[]>([]);
+  const [selectedProducts, setSelectedProducts] = useState<ProductData[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -22,10 +22,9 @@ const Carousel = () => {
 
     const loadData = async () => {
       try {
-        const response = await fetchCarouselData();
-        console.log('Response dari API:', response.data);
+        const response = await fetchProductData();
         if (isMounted) {
-          setCarouselData(response.data);
+          setProductData(response.data);
         }
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -41,44 +40,54 @@ const Carousel = () => {
     loadData();
 
     return () => {
-      isMounted = false; // Batalkan update jika komponen di-unmount
+      isMounted = false;
     };
   }, []);
 
-  const handleSelectionChange = useCallback((selectedItems: CarouselData[]) => {
-    setSelectedCarousel(selectedItems);
-  }, []);
+  const handleSelectionChange = useCallback(
+    (selectedItems: TableProductData[]) => {
+      const mappedItems = selectedItems.map((item) => ({
+        ...item,
+        price: parseFloat(item.price.replace(/[^\d.-]/g, '')),
+      }));
+      setSelectedProducts(mappedItems);
+    },
+    []
+  );
 
   const productHeaders = useMemo(
     () => [
-      { key: 'image', label: 'Image', sortable: true },
-      { key: 'title', label: 'Title', sortable: true },
-      { key: 'description', label: 'Description', sortable: true },
-      { key: 'status', label: 'Status', sortable: true },
-      { key: 'action', label: 'Action', sortable: true },
+      { key: 'image', label: 'Gambar', sortable: true },
+      { key: 'name', label: 'Nama Produk', sortable: true },
+      { key: 'description', label: 'Deskripsi', sortable: true },
+      { key: 'price', label: 'Harga', sortable: true },
+      { key: 'type', label: 'Kategori', sortable: true },
+      { key: 'action', label: 'Aksi', sortable: false },
     ],
     []
   );
 
-  const tableData = useMemo(() => {
-    return carouselData.map((item) => ({
+  type TableProductData = Omit<ProductData, 'price'> & {
+    price: string;
+  };
+
+  const tableData: TableProductData[] = useMemo(() => {
+    return productData.map((item) => ({
       ...item,
       id: String(item.id),
-      status: item.status,
-      image: item.image,
-      title: item.title,
-      description: item.description,
+      price: new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+      }).format(item.price),
     }));
-  }, [carouselData]);
+  }, [productData]);
 
   const handleDelete = useCallback(
     async (id: string) => {
       try {
-        console.log('selectedCarousel:', selectedCarousel);
-        await deleteCarouselData(id);
-        setCarouselData((prev) =>
-          prev.filter((item) => String(item.id) !== id)
-        );
+        console.log('selectedProducts:', selectedProducts);
+        await deleteProductData(id);
+        setProductData((prev) => prev.filter((item) => String(item.id) !== id));
         setError('');
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -88,25 +97,25 @@ const Carousel = () => {
         }
       }
     },
-    [selectedCarousel]
+    [selectedProducts]
   );
 
   return (
     <div className='p-4'>
-      <Breadcrumb main='Dashboard' sub='Carousel' />
+      <Breadcrumb main='Dashboard' sub='Product' />
 
       <div className='flex flex-row justify-between items-center mb-4'>
-        <span className='text-4xl text-black font-medium'>Data Carousel</span>
+        <span className='text-4xl text-black font-medium'>Data Produk</span>
         <Button
           label='Tambah'
-          onClick={async () => navigate('/carousel/add')}
+          onClick={async () => navigate('/product/add')}
           className='w-xs px-4 py-2 rounded-lg text-white shadow-md bg-blue-500 hover:bg-blue-600'
         />
       </div>
 
       {error && <p className='text-red-500'>{error}</p>}
 
-      <Table
+      <Table<TableProductData>
         selectable={true}
         headers={productHeaders}
         data={tableData}
@@ -132,6 +141,10 @@ const Carousel = () => {
             </td>
             <td className='px-6 py-4 font-medium'>{item.title}</td>
             <td className='px-6 py-4 text-gray-600'>{item.description}</td>
+            <td className='px-6 py-4'>{item.price}</td>
+            <td className='px-6 py-4'>
+              {item.type_product === 'jasa' ? 'Jasa' : 'Produk'}
+            </td>
             <td className='px-6 py-4'>
               <StatusBadge status={item.status} />
             </td>
@@ -140,7 +153,7 @@ const Carousel = () => {
                 <button
                   onClick={(e) => {
                     e.preventDefault();
-                    navigate(`/carousel/edit/${item.id}`);
+                    navigate(`/product/edit/${item.id}`);
                   }}
                   className='text-blue-600 hover:text-blue-800'
                 >
@@ -168,7 +181,7 @@ const Carousel = () => {
         onSelectionChange={handleSelectionChange}
         emptyState={
           <div className='text-gray-500 py-4 text-center'>
-            Tidak ada data carousel
+            Tidak ada data produk
           </div>
         }
         className='mt-4 shadow-sm'
@@ -177,4 +190,4 @@ const Carousel = () => {
   );
 };
 
-export default Carousel;
+export default Product;

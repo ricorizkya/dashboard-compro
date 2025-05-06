@@ -58,7 +58,6 @@ const Table = <T extends { id: string }>({
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [globalFilterValue, setGlobalFilterValue] = useState('');
-  const previousDataRef = useRef<T[]>([]);
 
   // Memoized calculations
   const pageSize = pagination?.pageSize || 10;
@@ -93,6 +92,8 @@ const Table = <T extends { id: string }>({
       })
     );
   }, [sortedData, globalFilterValue, headers]);
+
+  const previousDataRef = useRef(filteredData);
 
   const totalPages = useMemo(
     () => meta?.totalPages || Math.ceil(filteredData.length / pageSize),
