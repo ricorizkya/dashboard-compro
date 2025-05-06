@@ -1,3 +1,31 @@
+html {
+  box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+@media (max-width: 767px) {
+  .sidebar-mobile-closed {
+    height: 4rem !important;
+    overflow: hidden;
+  }
+
+  .sidebar-mobile-closed nav {
+    display: none !important;
+  }
+}
+
+.sidebar-nav {
+  transition: height 0.3s ease-out, opacity 0.2s linear;
+}
+
+.sidebar-ease {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
 /* #root {
   max-width: 1280px;
   margin: 0 auto;
