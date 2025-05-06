@@ -7,6 +7,8 @@ import Carousel from './pages/carousel/Carousel';
 import Setting from './pages/setting/Setting';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { useEffect, useState } from 'react';
+import AddCarousel from './pages/carousel/AddCarousel';
+import EditCarousel from './pages/carousel/EditCarousel';
 
 function App() {
   return (
@@ -56,6 +58,8 @@ const Router = () => {
       <Route element={<ProtectedRoute />}>
         <Route path='/' element={<Dashboard />} />
         <Route path='/carousel' element={<Carousel />} />
+        <Route path='/carousel/add' element={<AddCarousel />} />
+        <Route path='/carousel/edit/:id' element={<EditCarousel />} />
         <Route path='/settings' element={<Setting />} />
       </Route>
 

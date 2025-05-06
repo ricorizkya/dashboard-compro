@@ -3,6 +3,7 @@ type ButtonProps = {
   onClick: (e: React.FormEvent) => Promise<void>;
   disabled?: boolean;
   className?: string;
+  backgroundColor?: string;
 };
 
 export const Button: React.FC<ButtonProps> = ({
@@ -10,6 +11,7 @@ export const Button: React.FC<ButtonProps> = ({
   onClick,
   disabled = false,
   className,
+  backgroundColor = '#003366',
 }) => {
   return (
     <button
@@ -22,7 +24,7 @@ export const Button: React.FC<ButtonProps> = ({
         ${disabled ? 'cursor-not-allowed' : ''}`
       }
       style={{
-        background: disabled ? '#cccccc' : '#003366',
+        background: disabled ? '#cccccc' : backgroundColor,
       }}
     >
       {label}

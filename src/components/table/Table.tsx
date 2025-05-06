@@ -1,12 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { FiChevronDown, FiChevronUp, FiLoader } from 'react-icons/fi';
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+  useRef,
+} from 'react';
+import { FiChevronUp, FiChevronDown, FiLoader } from 'react-icons/fi';
 
 interface TableProps<T extends { id: string }> {
   headers: {
     key: string;
     label: string;
     sortable?: boolean;
-    // filterable?: boolean;
     className?: string;
   }[];
   data: T[];
@@ -25,8 +30,12 @@ interface TableProps<T extends { id: string }> {
   globalFilter?: boolean;
   loading?: boolean;
   onSort?: (sortKey: string, direction: 'asc' | 'desc') => void;
-  onFilter?: (filterKey: string, value: string) => void;
   onSelectionChange?: (selectedItems: T[]) => void;
+  meta?: {
+    page?: number;
+    total?: number;
+    totalPages?: number;
+  };
 }
 
 const Table = <T extends { id: string }>({
@@ -41,96 +50,117 @@ const Table = <T extends { id: string }>({
   globalFilter = true,
   loading = false,
   onSort,
-  // onFilter,
   onSelectionChange,
+  meta,
 }: TableProps<T>) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState<string>('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
-  // const [filters, setFilters] = useState<Record<string, string>>({});
-  const [localData, setLocalData] = useState<T[]>([]);
   const [globalFilterValue, setGlobalFilterValue] = useState('');
+  const previousDataRef = useRef<T[]>([]);
 
-  // Pagination
+  // Memoized calculations
   const pageSize = pagination?.pageSize || 10;
-  const totalPages = Math.ceil(data.length / pageSize);
-  const startIndex = (currentPage - 1) * pageSize;
-  const endIndex = startIndex + pageSize;
 
-  // Sorting
-  useEffect(() => {
-    if (sortKey) {
-      const sorted = [...data].sort((a, b) => {
-        const aValue = a[sortKey as keyof T];
-        const bValue = b[sortKey as keyof T];
+  const sortedData = useMemo(() => {
+    if (!sortKey) return data;
 
-        if (typeof aValue === 'string' && typeof bValue === 'string') {
-          return sortDirection === 'asc'
-            ? aValue.localeCompare(bValue)
-            : bValue.localeCompare(aValue);
-        }
+    return [...data].sort((a, b) => {
+      const aValue = a[sortKey as keyof T];
+      const bValue = b[sortKey as keyof T];
+      const isString = typeof aValue === 'string' && typeof bValue === 'string';
+
+      if (isString) {
         return sortDirection === 'asc'
-          ? Number(aValue) - Number(bValue)
-          : Number(bValue) - Number(aValue);
-      });
-      setLocalData(sorted);
-    } else {
-      setLocalData(data);
-    }
-  }, [sortKey, sortDirection, data]);
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
+      }
 
-  // Filtering
-  useEffect(() => {
-    let filteredData = [...data];
+      return sortDirection === 'asc'
+        ? Number(aValue) - Number(bValue)
+        : Number(bValue) - Number(aValue);
+    });
+  }, [data, sortKey, sortDirection]);
 
-    if (globalFilterValue) {
-      filteredData = filteredData.filter((item) =>
-        headers.some((header) => {
-          const value = String(item[header.key as keyof T]);
-          return value.toLowerCase().includes(globalFilterValue.toLowerCase());
-        })
-      );
-    }
+  const filteredData = useMemo(() => {
+    if (!globalFilterValue) return sortedData;
 
-    setLocalData(filteredData);
-  }, [globalFilterValue, data, headers]);
+    return sortedData.filter((item) =>
+      headers.some((header) => {
+        const value = String(item[header.key as keyof T] || '');
+        return value.toLowerCase().includes(globalFilterValue.toLowerCase());
+      })
+    );
+  }, [sortedData, globalFilterValue, headers]);
 
-  // Selection
-  const toggleRowSelection = (id: string) => {
+  const totalPages = useMemo(
+    () => meta?.totalPages || Math.ceil(filteredData.length / pageSize),
+    [meta, filteredData, pageSize]
+  );
+
+  const paginatedData = useMemo(
+    () =>
+      filteredData.slice((currentPage - 1) * pageSize, currentPage * pageSize),
+    [filteredData, currentPage, pageSize]
+  );
+
+  const allSelected = useMemo(
+    () =>
+      selectable &&
+      filteredData.length > 0 &&
+      filteredData.every((item) => selectedRows.includes(item.id)),
+    [selectable, filteredData, selectedRows]
+  );
+
+  // Handlers
+  const toggleRowSelection = useCallback((id: string) => {
     setSelectedRows((prev) =>
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
     );
-  };
+  }, []);
 
-  const toggleAllSelection = () => {
-    if (selectedRows.length === localData.length) {
-      setSelectedRows([]);
-    } else {
-      setSelectedRows(localData.map((item) => item.id));
-    }
-  };
+  const toggleAllSelection = useCallback(() => {
+    setSelectedRows((prev) =>
+      allSelected
+        ? prev.filter((id) => !filteredData.some((item) => item.id === id))
+        : [...prev, ...filteredData.map((item) => item.id)]
+    );
+  }, [allSelected, filteredData]);
 
+  const handleSort = useCallback(
+    (key: string) => {
+      if (!sortable) return;
+
+      const newDirection =
+        sortKey === key && sortDirection === 'asc' ? 'desc' : 'asc';
+
+      setSortKey(key);
+      setSortDirection(newDirection);
+      onSort?.(key, newDirection);
+    },
+    [sortable, sortKey, sortDirection, onSort]
+  );
+
+  // Sync selection changes
   useEffect(() => {
     if (onSelectionChange) {
-      const selectedItems = data.filter((item) =>
+      const selectedItems = filteredData.filter((item) =>
         selectedRows.includes(item.id)
       );
       onSelectionChange(selectedItems);
     }
-  }, [selectedRows, data, onSelectionChange]);
+  }, [selectedRows, filteredData, onSelectionChange]);
 
-  // Handlers
-  const handleSort = (key: string) => {
-    if (!sortable) return;
-
-    const newDirection =
-      sortKey === key && sortDirection === 'asc' ? 'desc' : 'asc';
-
-    setSortKey(key);
-    setSortDirection(newDirection);
-    onSort?.(key, newDirection);
-  };
+  // Reset page when data changes
+  useEffect(() => {
+    if (
+      JSON.stringify(previousDataRef.current) !== JSON.stringify(filteredData)
+    ) {
+      setCurrentPage(1);
+      previousDataRef.current = [...filteredData];
+    }
+  }, [filteredData]);
 
   return (
     <div className={`overflow-x-auto rounded-lg border ${className}`}>
@@ -145,34 +175,27 @@ const Table = <T extends { id: string }>({
           />
         </div>
       )}
-      {/* Loading State */}
+
       {loading && (
         <div className='absolute inset-0 bg-white bg-opacity-50 flex items-center justify-center'>
           <FiLoader className='animate-spin text-2xl text-primary' />
         </div>
       )}
 
-      {/* Table */}
       <table className='w-full divide-y divide-gray-200'>
-        {/* Header */}
         <thead className='bg-gray-50'>
           <tr>
-            {/* Selection Checkbox */}
             {selectable && (
               <th className='w-12 px-4 py-3'>
                 <input
                   type='checkbox'
-                  checked={
-                    selectedRows.length === localData.length &&
-                    localData.length > 0
-                  }
+                  checked={allSelected}
                   onChange={toggleAllSelection}
                   className='form-checkbox h-4 w-4 text-primary'
                 />
               </th>
             )}
 
-            {/* Headers */}
             {headers.map((header) => (
               <th
                 key={header.key}
@@ -182,8 +205,6 @@ const Table = <T extends { id: string }>({
               >
                 <div className='flex items-center gap-2'>
                   {header.label}
-
-                  {/* Sorting Arrows */}
                   {sortable && header.sortable && (
                     <button
                       onClick={() => handleSort(header.key)}
@@ -211,73 +232,57 @@ const Table = <T extends { id: string }>({
           </tr>
         </thead>
 
-        {/* Body */}
         <tbody className='divide-y divide-gray-200 bg-white'>
-          {localData.slice(startIndex, endIndex).map((item) =>
+          {paginatedData.map((item) =>
             renderRow(item, {
               isSelected: selectedRows.includes(item.id),
               toggleSelection: () => toggleRowSelection(item.id),
             })
           )}
 
-          {/* Empty State */}
-          {localData.length === 0 && !loading && (
+          {filteredData.length === 0 && !loading && (
             <tr>
               <td
                 colSpan={headers.length + (selectable ? 1 : 0)}
                 className='px-6 py-4 text-center'
               >
-                {emptyState || 'No data available'}
+                {emptyState || 'Tidak ada data'}
               </td>
             </tr>
           )}
         </tbody>
       </table>
 
-      {/* Pagination */}
       {pagination?.showControls && (
         <div className='flex items-center justify-between px-4 py-3 border-t'>
           <div className='flex items-center gap-4'>
             <span className='text-sm'>
-              Showing {startIndex + 1} - {Math.min(endIndex, localData.length)}{' '}
-              of {localData.length}
+              Menampilkan{' '}
+              {Math.min((currentPage - 1) * pageSize + 1, filteredData.length)}{' '}
+              - {Math.min(currentPage * pageSize, filteredData.length)} dari{' '}
+              {filteredData.length}
             </span>
-
-            <select
-              value={pageSize}
-              onChange={() => setCurrentPage(1)}
-              className='border rounded px-2 py-1 text-sm'
-              disabled={loading}
-            >
-              {[5, 10, 20, 50].map((size) => (
-                <option key={size} value={size}>
-                  Show {size}
-                </option>
-              ))}
-            </select>
           </div>
 
           <div className='flex gap-2'>
             <button
-              onClick={() => setCurrentPage((p: number) => Math.max(1, p - 1))}
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1 || loading}
               className='px-3 py-1 border rounded text-sm disabled:opacity-50'
             >
-              Previous
+              Sebelumnya
             </button>
 
             <span className='px-3 py-1 text-sm'>
-              Page {currentPage} of {totalPages}
+              Halaman {currentPage} dari {totalPages}
             </span>
 
             <button
-              onClick={() =>
-                setCurrentPage((p: number) => Math.min(totalPages, p + 1))
-              }
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages || loading}
               className='px-3 py-1 border rounded text-sm disabled:opacity-50'
             >
-              Next
+              Berikutnya
             </button>
           </div>
         </div>

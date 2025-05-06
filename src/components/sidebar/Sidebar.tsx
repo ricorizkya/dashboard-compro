@@ -126,7 +126,7 @@ const Sidebar = () => {
               to={item.path}
               className={`flex items-center gap-4 px-4 py-2 rounded-lg transition-all
                 ${
-                  location.pathname === item.path
+                  location.pathname.startsWith(item.path)
                     ? 'bg-[#003366] text-white font-semibold'
                     : 'text-gray-700 hover:bg-gray-100'
                 }
