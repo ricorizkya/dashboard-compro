@@ -52,7 +52,9 @@ const AddPortfolioReview = () => {
     if (productData === null) return [];
     return productData.map((item) => ({
       value: String(item.id),
-      label: item.title,
+      label: `${item.type_product === 'jasa' ? 'Jasa' : 'Produk'} - ${
+        item.title
+      }`,
     }));
   }, [productData]);
 

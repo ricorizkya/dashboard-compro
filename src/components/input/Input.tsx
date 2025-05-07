@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Eye from '../../assets/icons/Eye';
 import EyeOff from '../../assets/icons/EyeOff';
 
@@ -12,6 +12,7 @@ type InputProps = {
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onFileChange?: (files: FileList | null) => void;
   className?: string;
+  maxDate?: string;
 };
 
 export const Input: React.FC<InputProps> = ({
@@ -24,13 +25,39 @@ export const Input: React.FC<InputProps> = ({
   onChange,
   onFileChange,
   className = '',
+  maxDate,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [fileName, setFileName] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const isPassword = type === 'password';
   const isFile = type === 'file';
-  const isDate = type === 'date'; // Tambah kondisi untuk date
+  const isDate = type === 'date';
+
+  const getToday = () => {
+    const now = new Date();
+    return now.toISOString().split('T')[0];
+  };
+
+  const [maxDateState, setMaxDate] = useState(maxDate || getToday());
+
+  useEffect(() => {
+    if (maxDate) {
+      setMaxDate(maxDate);
+    }
+  }, [maxDate]);
+
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedDate = e.target.value;
+
+    if (selectedDate > maxDateState) {
+      e.target.value = maxDateState;
+    }
+
+    if (onChange) {
+      onChange(e);
+    }
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -88,8 +115,9 @@ export const Input: React.FC<InputProps> = ({
             } ${isDate ? 'date-input' : ''} ${className}`}
             placeholder={placeholder}
             value={value}
-            onChange={onChange}
+            onChange={isDate ? handleDateChange : onChange}
             readOnly={readonly}
+            max={isDate ? maxDateState : undefined}
           />
 
           {/* Tambah styling khusus untuk ikon kalender */}

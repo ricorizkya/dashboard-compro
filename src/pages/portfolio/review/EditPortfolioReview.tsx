@@ -45,7 +45,21 @@ const EditPortfolioReview = () => {
           setDataPortfolioReviews(data);
           setTitle(data.title);
           setDescription(data.description);
-          setDate(data.date);
+          const isValid = data.date?.match(/^\d{4}-\d{2}-\d{2}/);
+          if (!isValid) {
+            throw new Error('Format tanggal tidak valid dari backend');
+          }
+
+          const formattedDate = new Date(data.date).toISOString().split('T')[0];
+          setDate(formattedDate);
+          setProductId(Number(data.product_id));
+
+          const selectedProduct = productData.find(
+            (product) => product.id === data.product_id
+          );
+          if (selectedProduct) {
+            setProductId(Number(selectedProduct.id));
+          }
         }
       } catch (error) {
         console.error('Error fetching portfolio review data:', error);
@@ -54,7 +68,7 @@ const EditPortfolioReview = () => {
     };
 
     loadData();
-  }, [id]);
+  }, [id, productData]);
 
   useEffect(() => {
     let isMounted = true;
@@ -113,7 +127,7 @@ const EditPortfolioReview = () => {
       }
 
       await updatePortfolioReview(id, formData);
-      navigate('/portfolio/images');
+      navigate('/portfolio/reviews');
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);
@@ -165,12 +179,12 @@ const EditPortfolioReview = () => {
           </div>
           <div>
             <label htmlFor='title' className='text-sm mb-2 block'>
-              Produk (Wajib)
+              Produk atau Jasa
             </label>
             <Dropdown
               options={dropdownData}
               placeholder='Pilih produk atau jasa'
-              value={productId.toString()}
+              value={dataPortfolioReviews.product_id?.toString()}
               onChange={(value: string | string[]) =>
                 setProductId(Number(value))
               }
@@ -179,7 +193,7 @@ const EditPortfolioReview = () => {
 
           <div>
             <label htmlFor='title' className='text-sm mb-2 block'>
-              Judul (Wajib)
+              Judul
             </label>
             <Input
               type='text'
@@ -204,7 +218,7 @@ const EditPortfolioReview = () => {
 
           <div>
             <label htmlFor='title' className='text-sm mb-2 block'>
-              Tanggal (Wajib)
+              Tanggal
             </label>
             <Input
               type='date'

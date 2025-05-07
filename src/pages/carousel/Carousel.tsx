@@ -61,6 +61,7 @@ const Carousel = () => {
   );
 
   const tableData = useMemo(() => {
+    if (carouselData === null) return [];
     return carouselData.map((item) => ({
       ...item,
       id: String(item.id),

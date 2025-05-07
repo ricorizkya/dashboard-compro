@@ -72,6 +72,7 @@ const Product = () => {
   };
 
   const tableData: TableProductData[] = useMemo(() => {
+    if (productData === null) return [];
     return productData.map((item) => ({
       ...item,
       id: String(item.id),

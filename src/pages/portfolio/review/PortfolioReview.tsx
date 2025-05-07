@@ -11,6 +11,7 @@ import { Button } from '../../../components/button/Button';
 import Table from '../../../components/table/Table';
 import { MdEdit } from 'react-icons/md';
 import { BsFillTrash3Fill } from 'react-icons/bs';
+import { backendToFrontendDate } from '../../../utils/utils';
 
 const PortfolioReview = () => {
   const navigate = useNavigate();
@@ -76,6 +77,7 @@ const PortfolioReview = () => {
       ...item,
       id: String(item.id),
       image: item.image,
+      date: backendToFrontendDate(item.date),
     }));
   }, [portfolioReviews]);
 
