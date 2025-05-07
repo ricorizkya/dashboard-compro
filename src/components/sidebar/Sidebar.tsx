@@ -121,14 +121,14 @@ const Sidebar = () => {
       {/* Navigation */}
       <nav
         className={`
-    px-4 pb-4 bg-amber-500
-    h-[calc(100vh-8rem)]
-    overflow-y-auto
-    transition-opacity duration-300
-    ${isOpen ? 'opacity-100' : 'opacity-0'}
-    md:transition-none md:h-[calc(100vh-4rem)] md:opacity-100
-    ${isExpanded ? 'md:w-72' : 'md:w-20'}
-  `}
+          px-4 pb-4 bg-amber-500
+          h-[calc(100vh-8rem)]
+          overflow-y-auto
+          transition-opacity duration-300
+          ${isOpen ? 'opacity-100' : 'opacity-0'}
+          md:transition-none md:h-[calc(100vh-4rem)] md:opacity-100
+          ${isExpanded ? 'md:w-72' : 'md:w-20'}
+        `}
       >
         <div className='flex flex-col gap-2'>
           {menuItems.map((item, idx) => (

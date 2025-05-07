@@ -17,6 +17,12 @@ import {
   useSidebar,
 } from './components/sidebar/SidebarContext';
 import { AnimatePresence, motion } from 'framer-motion';
+import PortfolioImages from './pages/portfolio/images/PortfolioImages';
+import AddPortfolioImages from './pages/portfolio/images/AddPortfolioImages';
+import EditPortfolioImages from './pages/portfolio/images/EditPortfolioImages';
+import PortfolioReview from './pages/portfolio/review/PortfolioReview';
+import AddPortfolioReview from './pages/portfolio/review/AddPortfolioReview';
+import EditPortfolioReview from './pages/portfolio/review/EditPortfolioReview';
 
 function App() {
   return (
@@ -87,6 +93,20 @@ const Router = () => {
         <Route path='/product' element={<Product />} />
         <Route path='/product/add' element={<AddProduct />} />
         <Route path='/product/edit/:id' element={<EditProduct />} />
+
+        <Route path='/portfolio/images' element={<PortfolioImages />} />
+        <Route path='portfolio/images/add' element={<AddPortfolioImages />} />
+        <Route
+          path='/portfolio/images/edit/:id'
+          element={<EditPortfolioImages />}
+        />
+
+        <Route path='portfolio/reviews' element={<PortfolioReview />} />
+        <Route path='portfolio/reviews/add' element={<AddPortfolioReview />} />
+        <Route
+          path='portfolio/reviews/edit/:id'
+          element={<EditPortfolioReview />}
+        />
 
         <Route path='/settings' element={<Setting />} />
       </Route>
