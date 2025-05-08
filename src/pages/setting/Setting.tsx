@@ -3,7 +3,7 @@ import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 import { FaPowerOff } from 'react-icons/fa';
 import { Input } from '../../components/input/Input';
 import { useNavigate } from 'react-router-dom';
-import { User } from '../../types/User';
+import { UserData } from '../../types/User';
 import { getUserById, handleUserError, updateUser } from '../../services/user';
 import { FiLoader } from 'react-icons/fi';
 import { Button } from '../../components/button/Button';
@@ -14,7 +14,7 @@ const Setting = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
   const [showModal, setShowModal] = useState(false);
-  const [userData, setUserData] = useState<User | null>(null);
+  const [userData, setUserData] = useState<UserData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [editedName, setEditedName] = useState(userData?.name || '');

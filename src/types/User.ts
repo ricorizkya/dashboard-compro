@@ -1,5 +1,5 @@
-export interface User {
-  id: number;
+export interface UserData {
+  id: string;
   name: string;
   phone: string;
   role: string;
@@ -13,4 +13,14 @@ export interface UpdateUserPayload {
   name: string;
   phone: string;
   password?: string;
+}
+
+export interface UserResponse {
+  data: UserData[];
+  meta: {
+    limit: number;
+    page: number;
+    total: number;
+    totalPages: number;
+  };
 }

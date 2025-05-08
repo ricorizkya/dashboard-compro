@@ -23,6 +23,10 @@ import EditPortfolioImages from './pages/portfolio/images/EditPortfolioImages';
 import PortfolioReview from './pages/portfolio/review/PortfolioReview';
 import AddPortfolioReview from './pages/portfolio/review/AddPortfolioReview';
 import EditPortfolioReview from './pages/portfolio/review/EditPortfolioReview';
+import Message from './pages/message/Message';
+import User from './pages/user/User';
+import EditUser from './pages/user/EditUser';
+import AddUser from './pages/user/AddUser';
 
 function App() {
   return (
@@ -107,6 +111,12 @@ const Router = () => {
           path='portfolio/reviews/edit/:id'
           element={<EditPortfolioReview />}
         />
+
+        <Route path='/messages' element={<Message />} />
+
+        <Route path='/users' element={<User />} />
+        <Route path='/users/add' element={<AddUser />} />
+        <Route path='/users/edit/:id' element={<EditUser />} />
 
         <Route path='/settings' element={<Setting />} />
       </Route>
