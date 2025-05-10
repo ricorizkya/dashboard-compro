@@ -6,7 +6,7 @@ import { MdEdit } from 'react-icons/md';
 import { BsFillTrash3Fill } from 'react-icons/bs';
 import { ProductData } from '../../types/Product';
 import axios from 'axios';
-import { deleteProductData, fetchProductData } from '../../services/product';
+import fetchProductData, { deleteProductData } from '../../services/product';
 import { useNavigate } from 'react-router-dom';
 import StatusBadge from '../../components/statusBadge/StatusBadge';
 
@@ -103,90 +103,112 @@ const Product = () => {
 
   return (
     <div className='p-4'>
-      <Breadcrumb main='Dashboard' sub='Product' />
+      <Breadcrumb main='Dashboard' sub='Services & Products' />
 
-      <div className='flex flex-row justify-between items-center mb-4'>
-        <span className='text-4xl text-black font-medium'>Data Produk</span>
-        <Button
-          label='Tambah'
-          onClick={async () => navigate('/product/add')}
-          className='w-xs px-4 py-2 rounded-lg text-white shadow-md bg-blue-500 hover:bg-blue-600'
-        />
+      <div className='flex flex-col gap-4 mb-4 md:flex-row md:justify-between md:items-center'>
+        <h1 className='text-3xl md:text-4xl text-black font-medium break-all'>
+          Data Services & Products
+        </h1>
+        <div className='w-full md:w-auto'>
+          <Button
+            label='Tambah'
+            onClick={async () => navigate('/product/add')}
+            className='w-full md:w-[120px] px-4 py-3 text-sm md:text-base rounded-lg text-white shadow-md bg-blue-500 hover:bg-blue-600 whitespace-nowrap'
+          />
+        </div>
       </div>
 
       {error && <p className='text-red-500'>{error}</p>}
 
-      <Table<TableProductData>
-        selectable={true}
-        headers={productHeaders}
-        data={tableData}
-        renderRow={(item, { isSelected, toggleSelection }) => (
-          <tr key={item.id} className={isSelected ? 'bg-blue-50' : ''}>
-            <td className='px-4 py-2'>
-              <input
-                type='checkbox'
-                checked={isSelected}
-                onChange={toggleSelection}
-                className='form-checkbox h-4 w-4 text-primary'
-              />
-            </td>
-            <td className='px-6 py-4'>
-              <img
-                src={`http://localhost:3000/${item.image}`}
-                alt={item.title}
-                className='w-20 h-12 object-cover rounded'
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = '/placeholder-image.jpg';
-                }}
-              />
-            </td>
-            <td className='px-6 py-4 font-medium'>{item.title}</td>
-            <td className='px-6 py-4 text-gray-600'>{item.description}</td>
-            <td className='px-6 py-4'>{item.price}</td>
-            <td className='px-6 py-4'>
-              {item.type_product === 'jasa' ? 'Jasa' : 'Produk'}
-            </td>
-            <td className='px-6 py-4'>
-              <StatusBadge status={item.status} />
-            </td>
-            <td className='px-6 py-4'>
-              <div className='flex gap-3 text-lg'>
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    navigate(`/product/edit/${item.id}`);
-                  }}
-                  className='text-blue-600 hover:text-blue-800'
-                >
-                  <MdEdit />
-                </button>
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleDelete(item.id);
-                  }}
-                  className='text-red-600 hover:text-red-800'
-                >
-                  <BsFillTrash3Fill />
-                </button>
-              </div>
-            </td>
-          </tr>
-        )}
-        pagination={{
-          pageSize: 10,
-          showControls: true,
+      <div
+        className='relative'
+        style={{
+          overflowX: 'scroll',
+          width: '80vw',
         }}
-        sortable
-        loading={isLoading}
-        onSelectionChange={handleSelectionChange}
-        emptyState={
-          <div className='text-gray-500 py-4 text-center'>
-            Tidak ada data produk
-          </div>
-        }
-        className='mt-4 shadow-sm'
-      />
+      >
+        {/* <div
+          className='overflow-x-auto'
+          style={{
+            overflowX: 'scroll',
+            width: '80vw',
+          }}
+        > */}
+        <div className='min-w-[800px] sm:min-w-full pr-8'>
+          <Table<TableProductData>
+            selectable={true}
+            headers={productHeaders}
+            data={tableData}
+            renderRow={(item, { isSelected, toggleSelection }) => (
+              <tr key={item.id} className={isSelected ? 'bg-blue-50' : ''}>
+                <td className='px-4 py-2'>
+                  <input
+                    type='checkbox'
+                    checked={isSelected}
+                    onChange={toggleSelection}
+                    className='form-checkbox h-4 w-4 text-primary'
+                  />
+                </td>
+                <td className='px-6 py-4'>
+                  <img
+                    src={`http://localhost:3000/${item.image}`}
+                    alt={item.title}
+                    className='w-20 h-12 object-cover rounded'
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src =
+                        '/placeholder-image.jpg';
+                    }}
+                  />
+                </td>
+                <td className='px-6 py-4 font-medium'>{item.title}</td>
+                <td className='px-6 py-4 text-gray-600'>{item.description}</td>
+                <td className='px-6 py-4'>{item.price}</td>
+                <td className='px-6 py-4'>
+                  {item.type_product === 'jasa' ? 'Jasa' : 'Produk'}
+                </td>
+                <td className='px-6 py-4'>
+                  <StatusBadge status={item.status} />
+                </td>
+                <td className='px-6 py-4'>
+                  <div className='flex gap-3 text-lg'>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        navigate(`/product/edit/${item.id}`);
+                      }}
+                      className='text-blue-600 hover:text-blue-800'
+                    >
+                      <MdEdit />
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleDelete(item.id);
+                      }}
+                      className='text-red-600 hover:text-red-800'
+                    >
+                      <BsFillTrash3Fill />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            )}
+            pagination={{
+              pageSize: 10,
+              showControls: true,
+            }}
+            sortable
+            loading={isLoading}
+            onSelectionChange={handleSelectionChange}
+            emptyState={
+              <div className='text-gray-500 py-4 text-center'>
+                Tidak ada data produk
+              </div>
+            }
+            className='mt-4 shadow-sm'
+          />
+        </div>
+      </div>
     </div>
   );
 };

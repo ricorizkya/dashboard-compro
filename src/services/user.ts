@@ -57,7 +57,7 @@ export const updateUser = async (
   }
 };
 
-export const fetchUserData = async (): Promise<UserResponse> => {
+const fetchUserData = async (): Promise<UserResponse> => {
   try {
     const response = await api.get<UserResponse>('/users');
     return response.data;
@@ -105,3 +105,5 @@ export const addUserData = async (data: FormData): Promise<void> => {
     throw new Error('Terjadi kesalahan saat menambahkan data user');
   }
 };
+
+export default fetchUserData;

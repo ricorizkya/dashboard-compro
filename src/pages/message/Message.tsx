@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MessageData } from '../../types/Messages';
-import { fetchMessages } from '../../services/messages';
+import fetchMessages from '../../services/messages';
 import axios from 'axios';
 import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 import Table from '../../components/table/Table';

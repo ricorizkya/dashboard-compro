@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserData } from '../../types/User';
-import { deleteUserData, fetchUserData } from '../../services/user';
+import fetchUserData, { deleteUserData } from '../../services/user';
 import axios from 'axios';
 import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 import { Button } from '../../components/button/Button';

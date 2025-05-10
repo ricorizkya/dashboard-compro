@@ -70,9 +70,11 @@ const Router = () => {
             transition={{ duration: 0.2 }}
             className={`flex-1 p-6 bg-gray-50 min-h-screen mt-12 md:mt-0 
               transition-[margin-left] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]
-              ${isExpanded ? 'md:ml-72' : 'md:ml-20'}`}
+              ${isExpanded ? 'md:ml-72' : 'md:ml-20'} `}
           >
+            {/* <div className="min-w-[1024px]"> */}
             <Outlet />
+            {/* </div> */}
           </motion.div>
         </div>
       </AnimatePresence>

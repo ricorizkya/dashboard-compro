@@ -2,7 +2,7 @@ import axios from 'axios';
 import { CarouselData, CarouselResponse } from '../types/Carousel';
 import api from './api';
 
-export const fetchCarouselData = async (): Promise<CarouselResponse> => {
+const fetchCarouselData = async (): Promise<CarouselResponse> => {
   try {
     const response = await api.get<CarouselResponse>('/carousel');
     return response.data;
@@ -86,3 +86,5 @@ export const addCarouselData = async (data: FormData): Promise<void> => {
     throw new Error('Terjadi kesalahan saat menambahkan data carousel');
   }
 };
+
+export default fetchCarouselData;

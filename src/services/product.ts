@@ -3,7 +3,7 @@ import axios from 'axios';
 import { ProductData, ProductResponse } from '../types/Product';
 import api from './api';
 
-export const fetchProductData = async (): Promise<ProductResponse> => {
+const fetchProductData = async (): Promise<ProductResponse> => {
   try {
     const response = await api.get<ProductResponse>('/products');
     return response.data;
@@ -87,3 +87,5 @@ export const addProductData = async (data: FormData): Promise<void> => {
     throw new Error('Terjadi kesalahan saat menambahkan data product');
   }
 };
+
+export default fetchProductData;

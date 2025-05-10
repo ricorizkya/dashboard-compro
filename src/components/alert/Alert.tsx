@@ -16,12 +16,12 @@ const Alert: React.FC<AlertProps> = ({
 }) => {
   return (
     <div
-      className={`flex flex-row w-full items-center p-4 text-md text-white ${
+      className={`flex flex-row w-full items-center p-4 text-md ${
         status === 'success'
-          ? 'bg-green-600'
+          ? 'bg-green-50 text-green-700'
           : status === 'error'
-          ? 'bg-red-600'
-          : 'bg-yellow-600'
+          ? 'bg-red-50 text-red-700'
+          : 'bg-yellow-50 text-amber-700'
       } rounded-xl justify-between transition-all duration-300 ease-in-out ${className}`}
     >
       <div className='flex flex-row items-center'>

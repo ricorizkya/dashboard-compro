@@ -6,7 +6,7 @@ import { MdEdit } from 'react-icons/md';
 import { BsFillTrash3Fill } from 'react-icons/bs';
 import { CarouselData } from '../../types/Carousel';
 import axios from 'axios';
-import { deleteCarouselData, fetchCarouselData } from '../../services/carousel';
+import fetchCarouselData, { deleteCarouselData } from '../../services/carousel';
 import StatusBadge from '../../components/statusBadge/StatusBadge';
 import { useNavigate } from 'react-router-dom';
 
@@ -96,17 +96,22 @@ const Carousel = () => {
     <div className='p-4'>
       <Breadcrumb main='Dashboard' sub='Carousel' />
 
-      <div className='flex flex-row justify-between items-center mb-4'>
-        <span className='text-4xl text-black font-medium'>Data Carousel</span>
-        <Button
-          label='Tambah'
-          onClick={async () => navigate('/carousel/add')}
-          className='w-xs px-4 py-2 rounded-lg text-white shadow-md bg-blue-500 hover:bg-blue-600'
-        />
+      <div className='flex flex-col gap-4 mb-4 md:flex-row md:justify-between md:items-center'>
+        <h1 className='text-3xl md:text-4xl text-black font-medium break-all'>
+          Data Carousel
+        </h1>
+        <div className='w-full md:w-auto'>
+          <Button
+            label='Tambah'
+            onClick={async () => navigate('/carousel/add')}
+            className='w-auto md:w-[120px] px-4 py-3 text-sm md:text-base rounded-lg text-white shadow-md bg-blue-500 hover:bg-blue-600 whitespace-nowrap'
+          />
+        </div>
       </div>
 
       {error && <p className='text-red-500'>{error}</p>}
 
+      {/* <div className='min-w-[800px] sm:min-w-full pr-8'> */}
       <Table
         selectable={true}
         headers={productHeaders}
@@ -121,7 +126,7 @@ const Carousel = () => {
                 className='form-checkbox h-4 w-4 text-primary'
               />
             </td>
-            <td className='px-6 py-4'>
+            <td className='px-6 py-4 whitespace-nowrap w-[15%]'>
               <img
                 src={`http://localhost:3000/${item.image}`}
                 alt={item.title}
@@ -132,7 +137,9 @@ const Carousel = () => {
               />
             </td>
             <td className='px-6 py-4 font-medium'>{item.title}</td>
-            <td className='px-6 py-4 text-gray-600'>{item.description}</td>
+            <td className='px-6 py-4 text-gray-600 whitespace-nowrap w-[30%] truncate'>
+              {item.description}
+            </td>
             <td className='px-6 py-4'>
               <StatusBadge status={item.status} />
             </td>
@@ -175,6 +182,7 @@ const Carousel = () => {
         className='mt-4 shadow-sm'
       />
     </div>
+    // </div>
   );
 };
 

@@ -6,6 +6,7 @@ import React, {
   useRef,
 } from 'react';
 import { FiChevronUp, FiChevronDown, FiLoader } from 'react-icons/fi';
+import { IoChevronBack, IoChevronForward } from 'react-icons/io5';
 
 interface TableProps<T extends { id: string }> {
   headers: {
@@ -164,130 +165,150 @@ const Table = <T extends { id: string }>({
   }, [filteredData]);
 
   return (
-    <div className={`overflow-x-auto rounded-lg border ${className}`}>
-      {globalFilter && (
-        <div className='p-4 border-b'>
-          <input
-            type='text'
-            placeholder='Cari semua kolom...'
-            value={globalFilterValue}
-            onChange={(e) => setGlobalFilterValue(e.target.value)}
-            className='w-full max-w-xs px-3 py-2 border rounded-md text-sm'
-          />
-        </div>
-      )}
+    <div className={`overflow-visible rounded-3xl sm:w-auto${className}`}>
+      <div className='inline-block min-w-full align-middle rounded-3xl'>
+        {globalFilter && (
+          <div className='sticky top-0 bg-white z-10 p-4 '>
+            <input
+              type='text'
+              placeholder='Cari semua kolom...'
+              value={globalFilterValue}
+              onChange={(e) => setGlobalFilterValue(e.target.value)}
+              className='w-full max-w-xs px-3 py-2 border rounded-md text-sm'
+            />
+          </div>
+        )}
 
-      {loading && (
-        <div className='absolute inset-0 bg-white bg-opacity-50 flex items-center justify-center'>
-          <FiLoader className='animate-spin text-2xl text-primary' />
-        </div>
-      )}
+        {loading && (
+          <div className='absolute inset-0 bg-white bg-opacity-50 flex items-center justify-center'>
+            <FiLoader className='animate-spin text-2xl text-primary' />
+          </div>
+        )}
 
-      <table className='w-full divide-y divide-gray-200'>
-        <thead className='bg-gray-50'>
-          <tr>
-            {selectable && (
-              <th className='w-12 px-4 py-3'>
-                <input
-                  type='checkbox'
-                  checked={allSelected}
-                  onChange={toggleAllSelection}
-                  className='form-checkbox h-4 w-4 text-primary'
-                />
-              </th>
-            )}
-
-            {headers.map((header) => (
-              <th
-                key={header.key}
-                className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${
-                  header.className || 'text-gray-500'
-                }`}
-              >
-                <div className='flex items-center gap-2'>
-                  {header.label}
-                  {sortable && header.sortable && (
-                    <button
-                      onClick={() => handleSort(header.key)}
-                      className='flex flex-col'
-                    >
-                      <FiChevronUp
-                        className={`w-3 h-3 ${
-                          sortKey === header.key && sortDirection === 'asc'
-                            ? 'text-primary'
-                            : 'text-gray-300'
-                        }`}
+        <div
+          className='overflow-x-auto'
+          style={{
+            overflowX: 'scroll',
+            width: '80vw',
+          }}
+        >
+          <div className='overflow-scroll'>
+            <table className='min-w-full divide-y divide-gray-200'>
+              <thead className='bg-gray-50'>
+                <tr>
+                  {selectable && (
+                    <th className='w-12 px-4 py-3 sm:w-1'>
+                      <input
+                        type='checkbox'
+                        checked={allSelected}
+                        onChange={toggleAllSelection}
+                        className='form-checkbox h-4 w-4 text-primary'
                       />
-                      <FiChevronDown
-                        className={`w-3 h-3 -mt-1 ${
-                          sortKey === header.key && sortDirection === 'desc'
-                            ? 'text-primary'
-                            : 'text-gray-300'
-                        }`}
-                      />
-                    </button>
+                    </th>
                   )}
-                </div>
-              </th>
-            ))}
-          </tr>
-        </thead>
 
-        <tbody className='divide-y divide-gray-200 bg-white'>
-          {paginatedData.map((item) =>
-            renderRow(item, {
-              isSelected: selectedRows.includes(item.id),
-              toggleSelection: () => toggleRowSelection(item.id),
-            })
-          )}
+                  {headers.map((header) => (
+                    <th
+                      key={header.key}
+                      className={`px-6 py-3 text-left text-xs font-medium uppercase  ${
+                        header.className || 'text-gray-500'
+                      }`}
+                    >
+                      <div className='flex items-center gap-2'>
+                        {header.label}
+                        {sortable && header.sortable && (
+                          <button
+                            onClick={() => handleSort(header.key)}
+                            className='flex flex-col'
+                          >
+                            <FiChevronUp
+                              className={`w-3 h-3 ${
+                                sortKey === header.key &&
+                                sortDirection === 'asc'
+                                  ? 'text-primary'
+                                  : 'text-gray-300'
+                              }`}
+                            />
+                            <FiChevronDown
+                              className={`w-3 h-3 -mt-1 ${
+                                sortKey === header.key &&
+                                sortDirection === 'desc'
+                                  ? 'text-primary'
+                                  : 'text-gray-300'
+                              }`}
+                            />
+                          </button>
+                        )}
+                      </div>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
 
-          {filteredData.length === 0 && !loading && (
-            <tr>
-              <td
-                colSpan={headers.length + (selectable ? 1 : 0)}
-                className='px-6 py-4 text-center'
-              >
-                {emptyState || 'Tidak ada data'}
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+              <tbody className='divide-y divide-gray-200 bg-white'>
+                {paginatedData.map((item) =>
+                  renderRow(item, {
+                    isSelected: selectedRows.includes(item.id),
+                    toggleSelection: () => toggleRowSelection(item.id),
+                  })
+                )}
 
-      {pagination?.showControls && (
-        <div className='flex items-center justify-between px-4 py-3 border-t'>
-          <div className='flex items-center gap-4'>
-            <span className='text-sm'>
-              Menampilkan{' '}
-              {Math.min((currentPage - 1) * pageSize + 1, filteredData.length)}{' '}
-              - {Math.min(currentPage * pageSize, filteredData.length)} dari{' '}
-              {filteredData.length}
-            </span>
-          </div>
-
-          <div className='flex gap-2'>
-            <button
-              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              disabled={currentPage === 1 || loading}
-              className='px-3 py-1 border rounded text-sm disabled:opacity-50'
-            >
-              Sebelumnya
-            </button>
-
-            <span className='px-3 py-1 text-sm'>
-              Halaman {currentPage} dari {totalPages}
-            </span>
-
-            <button
-              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-              disabled={currentPage === totalPages || loading}
-              className='px-3 py-1 border rounded text-sm disabled:opacity-50'
-            >
-              Berikutnya
-            </button>
+                {filteredData.length === 0 && !loading && (
+                  <tr>
+                    <td
+                      colSpan={headers.length + (selectable ? 1 : 0)}
+                      className='px-6 py-4 text-center'
+                    >
+                      {emptyState || 'Tidak ada data'}
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
-      )}
+
+        {pagination?.showControls && (
+          // <div className='flex items-center justify-between px-4 py-3 border-t'>
+          <div className='sticky bottom-0 bg-white z-10 border-t px-3 pb-3'>
+            <div className='flex items-center gap-4 py-3'>
+              <span className='text-sm'>
+                Menampilkan{' '}
+                {Math.min(
+                  (currentPage - 1) * pageSize + 1,
+                  filteredData.length
+                )}{' '}
+                - {Math.min(currentPage * pageSize, filteredData.length)} dari{' '}
+                {filteredData.length}
+              </span>
+            </div>
+
+            <div className='flex gap-2'>
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1 || loading}
+                className='px-3 py-1 border rounded text-sm disabled:opacity-50'
+              >
+                <IoChevronBack />
+              </button>
+
+              <span className='px-3 py-1 text-sm'>
+                Halaman {currentPage} dari {totalPages}
+              </span>
+
+              <button
+                onClick={() =>
+                  setCurrentPage((p) => Math.min(totalPages, p + 1))
+                }
+                disabled={currentPage === totalPages || loading}
+                className='px-3 py-1 border rounded text-sm disabled:opacity-50'
+              >
+                <IoChevronForward />
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

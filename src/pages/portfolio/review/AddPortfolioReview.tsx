@@ -5,7 +5,7 @@ import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 import { Input } from '../../../components/input/Input';
 import { Button } from '../../../components/button/Button';
 import { Dropdown } from '../../../components/dropdown/Dropdown';
-import { fetchProductData } from '../../../services/product';
+import fetchProductData from '../../../services/product';
 import { ProductData } from '../../../types/Product';
 import axios from 'axios';
 

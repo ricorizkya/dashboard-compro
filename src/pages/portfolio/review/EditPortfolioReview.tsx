@@ -10,7 +10,7 @@ import { Input } from '../../../components/input/Input';
 import { Button } from '../../../components/button/Button';
 import { Dropdown } from '../../../components/dropdown/Dropdown';
 import { ProductData } from '../../../types/Product';
-import { fetchProductData } from '../../../services/product';
+import fetchProductData from '../../../services/product';
 import axios from 'axios';
 
 const EditPortfolioReview = () => {

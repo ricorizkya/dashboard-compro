@@ -39,6 +39,89 @@ html {
 .date-input {
   color-scheme: light;
 }
+
+.overflow-x-auto {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Untuk mobile scrolling */
+@media (max-width: 767px) {
+  .table-container {
+    width: 100vw;
+    margin-left: -1rem;
+    margin-right: -1rem;
+  }
+}
+
+.visible-scrollbar {
+  scrollbar-width: thin; /* Untuk Firefox */
+  scrollbar-color: #94a3b8 #f1f5f9; /* Warna scrollbar */
+}
+
+.visible-scrollbar::-webkit-scrollbar {
+  height: 8px; /* Tinggi scrollbar untuk horizontal */
+  width: 8px; /* Lebar scrollbar untuk vertical */
+}
+
+.visible-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #94a3b8; /* Warna thumb */
+  border-radius: 4px;
+}
+
+.visible-scrollbar::-webkit-scrollbar-track {
+  background-color: #f1f5f9; /* Warna track */
+}
+
+::-webkit-scrollbar {
+  height: 8px;
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+@media (max-width: 767px) {
+  .sticky {
+    position: -webkit-sticky;
+    position: sticky;
+  }
+
+  thead.sticky {
+    top: 68px;
+  }
+
+  tbody {
+    overflow-x: auto;
+    display: block;
+  }
+}
+
+@media (max-width: 640px) {
+  .sticky-pagination {
+    position: -webkit-sticky;
+    position: sticky;
+    bottom: 0;
+    background: white;
+    z-index: 10;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .sticky-search {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: white;
+  }
+
+  .scrollable-table {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
 /* #root {
   max-width: 1280px;
   margin: 0 auto;

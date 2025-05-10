@@ -5,25 +5,24 @@ import {
   PortfolioReviewsData,
 } from '../types/PortfolioReviews';
 
-export const fetchPortfolioReview =
-  async (): Promise<PortfolioReviewResponse> => {
-    try {
-      const response = await api.get<PortfolioReviewResponse>(
-        '/portfolio/reviews'
-      );
-      return response.data;
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        if (error.response?.status === 401) {
-          throw new Error('Sesi telah berakhir, silakan login kembali');
-        }
-        if (error.response?.status === 404) {
-          throw new Error('Data portfolio tidak ditemukan');
-        }
+const fetchPortfolioReview = async (): Promise<PortfolioReviewResponse> => {
+  try {
+    const response = await api.get<PortfolioReviewResponse>(
+      '/portfolio/reviews'
+    );
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 401) {
+        throw new Error('Sesi telah berakhir, silakan login kembali');
       }
-      throw new Error('Terjadi kesalahan saat memuat data portfolio');
+      if (error.response?.status === 404) {
+        throw new Error('Data portfolio tidak ditemukan');
+      }
     }
-  };
+    throw new Error('Terjadi kesalahan saat memuat data portfolio');
+  }
+};
 
 export const deletePortfolioReview = async (id: string): Promise<void> => {
   try {
@@ -99,3 +98,5 @@ export const addPortfolioReview = async (data: FormData): Promise<void> => {
     throw new Error('Terjadi kesalahan saat menambahkan data portfolio');
   }
 };
+
+export default fetchPortfolioReview;

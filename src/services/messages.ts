@@ -2,7 +2,7 @@ import axios from 'axios';
 import { MessageData, MessagesResponse } from '../types/Messages';
 import api from './api';
 
-export const fetchMessages = async (): Promise<MessagesResponse> => {
+const fetchMessages = async (): Promise<MessagesResponse> => {
   try {
     const response = await api.get<MessagesResponse>('/messages');
     return response.data;
@@ -35,3 +35,5 @@ export const getMessagesById = async (id: string): Promise<MessageData> => {
     throw new Error('Terjadi kesalahan saat memuat data portfolio');
   }
 };
+
+export default fetchMessages;

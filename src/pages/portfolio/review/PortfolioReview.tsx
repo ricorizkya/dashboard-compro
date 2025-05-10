@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PortfolioReviewsData } from '../../../types/PortfolioReviews';
-import {
+import fetchPortfolioReview, {
   deletePortfolioReview,
-  fetchPortfolioReview,
 } from '../../../services/portfolioReview';
 import axios from 'axios';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';

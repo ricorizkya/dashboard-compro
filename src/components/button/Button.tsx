@@ -20,7 +20,7 @@ export const Button: React.FC<ButtonProps> = ({
       className={
         className
           ? className
-          : `px-8 py-4 rounded-xl text-white w-full shadow-md
+          : `px-8 py-4 rounded-xl text-white w-auto shadow-md
         ${disabled ? 'cursor-not-allowed' : ''}`
       }
       style={{
